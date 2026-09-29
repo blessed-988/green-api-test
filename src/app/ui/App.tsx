@@ -1,12 +1,13 @@
-import axios from "axios";
-import { useEffect, type FC } from "react";
+import { RouterProvider } from "@tanstack/react-router";
+import { type FC } from "react";
+import { router } from "../router";
 
 export const App: FC = () => {
-    useEffect(() => {
-        axios.get("/test");
-        console.log(axios.defaults.baseURL);
-    }, []);
-    return <></>;
+    return (
+        <>
+            <RouterProvider router={router} />
+        </>
+    );
 };
 
 export default App;
