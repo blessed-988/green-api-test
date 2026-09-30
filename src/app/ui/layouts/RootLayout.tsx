@@ -7,7 +7,9 @@ export const RootLayout: FC = () => {
     return (
         <div className={cn(styles.rootLayout)}>
             <div className={cn(styles.pattern)} />
-            <Outlet />
+            <div className={cn(styles.outlet)}>
+                <Outlet />
+            </div>
         </div>
     );
 };

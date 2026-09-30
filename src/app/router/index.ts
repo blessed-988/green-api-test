@@ -1,9 +1,9 @@
 import { createRouter } from "@tanstack/react-router";
 import { rootRoute } from "./rootRoute";
+import { chatListRoute } from "./chat-list/route";
 import { loginRoute } from "./login/route";
-import { logoutRoute } from "./logout/route";
 
-const routeTree = rootRoute.addChildren([loginRoute, logoutRoute]);
+const routeTree = rootRoute.addChildren([chatListRoute, loginRoute]);
 
 export const router = createRouter({
     routeTree,

@@ -7,9 +7,11 @@ import { Input } from "src/shared/components/Input";
 import { Button } from "src/shared/components/Button";
 import { Typography } from "src/shared/components/Typography";
 import { loginSchema, type LoginFormData } from "./loginSchema";
+import { useNavigate } from "@tanstack/react-router";
 
 export const LoginPage: FC = () => {
     const login = useLogin();
+    const navigate = useNavigate();
 
     const {
         register,
@@ -26,6 +28,7 @@ export const LoginPage: FC = () => {
 
     const onSubmit = (data: LoginFormData) => {
         login(data);
+        navigate({ to: "/chat-list" });
     };
 
     return (

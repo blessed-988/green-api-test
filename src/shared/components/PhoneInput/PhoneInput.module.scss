@@ -1,0 +1,47 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.inputWrapper {
+    background-color: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+        border-color: rgb(255 255 255 / 25%);
+        background-color: rgb(255 255 255 / 8%);
+    }
+
+    &.inputWrapperError {
+        border-color: rgb(220 50 50 / 100%);
+
+        &:focus-within {
+            border-color: rgb(220 50 50 / 100%);
+        }
+    }
+}
+
+.input {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 14px;
+    color: rgb(255 255 255 / 100%);
+    font-family: inherit;
+    font-size: 14px;
+    resize: none;
+    width: 100%;
+    line-height: 1.5;
+
+    &::placeholder {
+        color: rgb(255 255 255 / 30%);
+    }
+}
+
+.errorText {
+    color: rgb(220 50 50 / 100%);
+    font-size: 12px;
+}

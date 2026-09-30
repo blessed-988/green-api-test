@@ -1,7 +1,7 @@
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "../rootRoute";
 
-export const logoutRoute = createRoute({
+export const chatListRoute = createRoute({
     getParentRoute: () => rootRoute,
-    path: "/logout",
-}).lazy(() => import("./lazy").then((d) => d.logoutLazyRoute));
+    path: "/chat-list",
+}).lazy(() => import("./lazy").then((d) => d.chatListLazyRoute));
