@@ -81,6 +81,9 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
     receiveMessage: (phone, text) =>
         set(
             produce((state: State) => {
+                if (!state.chats.includes(phone)) {
+                    state.chats.push(phone);
+                }
                 if (!state.chatMessages[phone]) state.chatMessages[phone] = [];
                 state.chatMessages[phone].push({
                     id: crypto.randomUUID(),

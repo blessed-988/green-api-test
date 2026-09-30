@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FC } from "react";
 import { useChatStore } from "src/entities/chat";
 import { sendMessage } from "src/entities/message";
 import { useInstanceStore } from "src/entities/instance";
 import { Button } from "src/shared/components/Button";
 import { Loader } from "src/shared/components/Loader";
+import { ConfirmModal } from "src/shared/components/ConfirmModal";
 import { AddChatModal } from "src/features/add-chat";
 import { usePollNotifications } from "src/features/poll-notifications";
 import PlusIcon from "src/shared/ui/assets/icons/plus.svg?react";
 import SendIcon from "src/shared/ui/assets/icons/send.svg?react";
+import TrashIcon from "src/shared/ui/assets/icons/trash.svg?react";
 import styles from "./ChatListPage.module.scss";
 import { Card } from "src/shared/components/Card";
 import { cn } from "src/shared/utils/cn";
@@ -23,16 +25,37 @@ export const ChatListPage: FC = () => {
     const isSending = useChatStore((s) => s.isSending);
     const selectChat = useChatStore((s) => s.selectChat);
     const selectNewChat = useChatStore((s) => s.selectNewChat);
+    const removeChat = useChatStore((s) => s.removeChat);
     const sendMessageToStore = useChatStore((s) => s.sendMessage);
     const setIsSending = useChatStore((s) => s.setIsSending);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [messageText, setMessageText] = useState("");
+    const [chatToDelete, setChatToDelete] = useState<string | null>(null);
+
+    const messagesAreaRef = useRef<HTMLDivElement>(null);
 
     const selectedMessages = selectedChatPhone ? chatMessages[selectedChatPhone] || [] : [];
 
+    useEffect(() => {
+        if (messagesAreaRef.current) {
+            messagesAreaRef.current.scrollTop = messagesAreaRef.current.scrollHeight;
+        }
+    }, [selectedChatPhone, selectedMessages.length]);
+
     const handleAddChat = (phone: string) => {
         selectNewChat(phone);
+    };
+
+    const handleDeleteChat = (phone: string) => {
+        setChatToDelete(phone);
+    };
+
+    const confirmDeleteChat = () => {
+        if (chatToDelete) {
+            removeChat(chatToDelete);
+            setChatToDelete(null);
+        }
     };
 
     const handleSendMessage = async () => {
@@ -98,18 +121,28 @@ export const ChatListPage: FC = () => {
                         </div>
                     ) : (
                         chats.map((phone) => (
-                            <button
+                            <div
                                 key={phone}
                                 className={`${styles.chatItem} ${selectedChatPhone === phone ? styles.active : ""}`}
-                                onClick={() => selectChat(phone)}
                             >
-                                <div className={styles.chatInfo}>
-                                    <div className={styles.chatPhone}>{formatPhone(phone)}</div>
-                                    <div className={styles.chatLastMessage}>
-                                        {chatMessages[phone]?.at(-1)?.text || "Нет сообщений"}
+                                <button
+                                    className={styles.chatItemButton}
+                                    onClick={() => selectChat(phone)}
+                                >
+                                    <div className={styles.chatInfo}>
+                                        <div className={styles.chatPhone}>{formatPhone(phone)}</div>
+                                        <div className={styles.chatLastMessage}>
+                                            {chatMessages[phone]?.at(-1)?.text || "Нет сообщений"}
+                                        </div>
                                     </div>
-                                </div>
-                            </button>
+                                </button>
+                                <button
+                                    className={styles.deleteChatButton}
+                                    onClick={() => handleDeleteChat(phone)}
+                                >
+                                    <TrashIcon />
+                                </button>
+                            </div>
                         ))
                     )}
                 </div>
@@ -122,7 +155,7 @@ export const ChatListPage: FC = () => {
                             <div className={styles.dialogPhone}>{formatPhone(selectedChatPhone)}</div>
                         </div>
 
-                        <div className={styles.messagesArea}>
+                        <div className={styles.messagesArea} ref={messagesAreaRef}>
                             {selectedMessages.length === 0 ? (
                                 <div className={styles.emptyMessages}>
                                     <Card className={cn("text-[13px] text-[rgb(255_255_255/50%)]")}>
@@ -178,6 +211,16 @@ export const ChatListPage: FC = () => {
             </div>
 
             <AddChatModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onAdd={handleAddChat} />
+
+            <ConfirmModal
+                isOpen={chatToDelete !== null}
+                onClose={() => setChatToDelete(null)}
+                onConfirm={confirmDeleteChat}
+                title="Удалить чат"
+                message={`Удалить чат с ${chatToDelete ? formatPhone(chatToDelete) : ""}?`}
+                confirmText="Удалить"
+                cancelText="Отмена"
+            />
         </div>
     );
 };
