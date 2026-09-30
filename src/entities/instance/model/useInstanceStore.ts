@@ -1,9 +1,7 @@
 import { createWithMiddlewares } from "src/shared/utils/createWithMiddlewares";
+import type { InstanceCredentials } from "../types/InstanceCredentials";
 
-interface State {
-    idInstance: string;
-    apiTokenInstance: string;
-}
+type State = InstanceCredentials;
 
 interface Action {
     setInstance: (credentials: State) => void;
@@ -17,6 +15,6 @@ const initialState: State = {
 
 export const useInstanceStore = createWithMiddlewares<State & Action>("instance-store")((set) => ({
     ...initialState,
-    setInstance: (credentials) => set((state) => ({ ...state, ...credentials })),
+    setInstance: (credentials: InstanceCredentials) => set((state) => ({ ...state, ...credentials })),
     clearInstance: () => set(() => ({ ...initialState })),
 }));

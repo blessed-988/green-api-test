@@ -1,6 +1,7 @@
 import { cn } from "src/shared/utils/cn";
 import styles from "./Button.module.scss";
 import type { FC, ButtonHTMLAttributes } from "react";
+import { Loader } from "src/shared/components/Loader";
 
 export type ButtonVariant = "primary" | "secondary";
 export type ButtonSize = "sm" | "md" | "lg";
@@ -10,6 +11,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     size?: ButtonSize;
     className?: string;
     disabled?: boolean;
+    loading?: boolean;
     children: React.ReactNode;
 }
 
@@ -18,16 +20,24 @@ export const Button: FC<Props> = ({
     size = "md",
     className,
     disabled = false,
+    loading = false,
     children,
     ...rest
 }) => {
     return (
         <button
-            className={cn(styles.button, styles[variant], styles[size], disabled && styles.disabled, className)}
-            disabled={disabled}
+            className={cn(
+                styles.button,
+                styles[variant],
+                styles[size],
+                (disabled || loading) && styles.disabled,
+                className,
+            )}
+            disabled={disabled || loading}
             {...rest}
         >
-            {children}
+            {loading && <Loader />}
+            {!loading && children}
         </button>
     );
 };

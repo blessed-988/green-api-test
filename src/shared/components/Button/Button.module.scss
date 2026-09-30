@@ -5,6 +5,10 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 
     &.primary {
         background-color: rgb(7 46 63 / 100%);
