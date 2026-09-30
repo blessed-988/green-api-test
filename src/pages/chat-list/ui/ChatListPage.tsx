@@ -1,7 +1,10 @@
 import { useState } from "react";
 import type { FC } from "react";
 import { useChatStore } from "src/entities/chat";
+import { sendMessage } from "src/entities/message";
+import { useInstanceStore } from "src/entities/instance";
 import { Button } from "src/shared/components/Button";
+import { Loader } from "src/shared/components/Loader";
 import { AddChatModal } from "src/features/add-chat";
 import PlusIcon from "src/shared/ui/assets/icons/plus.svg?react";
 import SendIcon from "src/shared/ui/assets/icons/send.svg?react";
@@ -14,9 +17,11 @@ export const ChatListPage: FC = () => {
     const chats = useChatStore((s) => s.chats);
     const chatMessages = useChatStore((s) => s.chatMessages);
     const selectedChatPhone = useChatStore((s) => s.selectedChatPhone);
+    const isSending = useChatStore((s) => s.isSending);
     const selectChat = useChatStore((s) => s.selectChat);
     const selectNewChat = useChatStore((s) => s.selectNewChat);
-    const sendMessage = useChatStore((s) => s.sendMessage);
+    const sendMessageToStore = useChatStore((s) => s.sendMessage);
+    const setIsSending = useChatStore((s) => s.setIsSending);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [messageText, setMessageText] = useState("");
@@ -27,12 +32,34 @@ export const ChatListPage: FC = () => {
         selectNewChat(phone);
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!messageText.trim() || !selectedChatPhone) return;
 
-        // TODO: Реализовать отправку сообщения через API Green API
-        sendMessage(selectedChatPhone, messageText.trim());
+        const text = messageText.trim();
         setMessageText("");
+        setIsSending(true);
+
+        const credentials = useInstanceStore.getState();
+
+        if (!credentials.idInstance || !credentials.apiTokenInstance) {
+            setIsSending(false);
+            return;
+        }
+
+        try {
+            await sendMessage({
+                idInstance: credentials.idInstance,
+                apiTokenInstance: credentials.apiTokenInstance,
+                phoneNumber: selectedChatPhone,
+                message: text,
+            });
+
+            sendMessageToStore(selectedChatPhone, text);
+        } catch {
+            setMessageText(text);
+        } finally {
+            setIsSending(false);
+        }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -127,10 +154,10 @@ export const ChatListPage: FC = () => {
                                 />
                                 <Button
                                     onClick={handleSendMessage}
-                                    disabled={!messageText.trim()}
+                                    disabled={!messageText.trim() || isSending}
                                     className={styles.sendButton}
                                 >
-                                    <SendIcon />
+                                    {isSending ? <Loader /> : <SendIcon />}
                                 </Button>
                             </div>
                         </div>

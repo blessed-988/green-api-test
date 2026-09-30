@@ -6,6 +6,7 @@ interface State {
     chats: string[];
     chatMessages: Record<string, Message[]>;
     selectedChatPhone: string | null;
+    isSending: boolean;
 }
 
 interface Action {
@@ -15,12 +16,14 @@ interface Action {
     selectNewChat: (phone: string) => void;
     sendMessage: (phone: string, text: string) => void;
     receiveMessage: (phone: string, text: string) => void;
+    setIsSending: (isSending: boolean) => void;
 }
 
 const initialState: State = {
     chats: [],
     chatMessages: {},
     selectedChatPhone: null,
+    isSending: false,
 };
 
 export const useChatStore = createWithMiddlewares<State & Action>("chat-store")((set) => ({
@@ -62,7 +65,6 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
             }),
         ),
 
-    // TODO: Реализовать отправку сообщения через API Green API
     sendMessage: (phone, text) =>
         set(
             produce((state: State) => {
@@ -76,7 +78,6 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
             }),
         ),
 
-    // TODO: Реализовать получение сообщения через API Green API
     receiveMessage: (phone, text) =>
         set(
             produce((state: State) => {
@@ -87,6 +88,13 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
                     timestamp: new Date(),
                     isOwn: false,
                 });
+            }),
+        ),
+
+    setIsSending: (isSending) =>
+        set(
+            produce((state: State) => {
+                state.isSending = isSending;
             }),
         ),
 }));
