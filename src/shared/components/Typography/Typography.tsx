@@ -18,20 +18,11 @@ const variantStyles: VariantStyles = {
     caption: "text-sm text-white/50",
 };
 
-export const Typography: FC<TypographyProps<any>> = ({
-    as,
-    variant = "p",
-    className,
-    children,
-    ...rest
-}) => {
+export const Typography: FC<TypographyProps<any>> = ({ as, variant = "p", className, children, ...rest }) => {
     const Component = as || variant || "p";
 
     return (
-        <Component
-            className={cn(variantStyles[variant], className)}
-            {...rest}
-        >
+        <Component className={cn(variantStyles[variant], className)} {...rest}>
             {children}
         </Component>
     );

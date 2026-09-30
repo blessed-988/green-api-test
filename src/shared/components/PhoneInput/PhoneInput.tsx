@@ -8,6 +8,8 @@ interface Props {
     error?: string;
     value: string;
     onChange: (value: string) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
 function formatMasked(raw: string): string {
@@ -21,7 +23,7 @@ function formatMasked(raw: string): string {
     return formatted;
 }
 
-export const PhoneInput: FC<Props> = ({ className, error, value, onChange }) => {
+export const PhoneInput: FC<Props> = ({ className, error, value, onChange, onFocus, onBlur }) => {
     const showError = !!error;
     const maskedValue = formatMasked(value);
 
@@ -34,6 +36,8 @@ export const PhoneInput: FC<Props> = ({ className, error, value, onChange }) => 
         <div className={styles.wrapper}>
             <div className={cn(styles.inputWrapper, showError && styles.inputWrapperError)}>
                 <IMaskInput
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     mask="+7 (000) 000-00-00"
                     value={maskedValue}
                     onAccept={handleAccept}

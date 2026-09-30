@@ -74,18 +74,12 @@ export const ChatListPage: FC = () => {
                         chats.map((phone) => (
                             <button
                                 key={phone}
-                                className={`${styles.chatItem} ${
-                                    selectedChatPhone === phone ? styles.active : ""
-                                }`}
+                                className={`${styles.chatItem} ${selectedChatPhone === phone ? styles.active : ""}`}
                                 onClick={() => selectChat(phone)}
                             >
-                                <div className={styles.avatarPlaceholder}>
-                                    {getPhoneInitials(phone)}
-                                </div>
+                                <div className={styles.avatarPlaceholder}>{getPhoneInitials(phone)}</div>
                                 <div className={styles.chatInfo}>
-                                    <div className={styles.chatPhone}>
-                                        {phone}
-                                    </div>
+                                    <div className={styles.chatPhone}>{phone}</div>
                                     <div className={styles.chatLastMessage}>
                                         {chatMessages[phone]?.at(-1)?.text || "Нет сообщений"}
                                     </div>
@@ -100,9 +94,7 @@ export const ChatListPage: FC = () => {
                 {selectedChatPhone ? (
                     <>
                         <div className={styles.dialogHeader}>
-                            <div className={styles.dialogPhone}>
-                                {selectedChatPhone}
-                            </div>
+                            <div className={styles.dialogPhone}>{selectedChatPhone}</div>
                         </div>
 
                         <div className={styles.messagesArea}>
@@ -160,11 +152,7 @@ export const ChatListPage: FC = () => {
                 )}
             </div>
 
-            <AddChatModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
-                onAdd={handleAddChat}
-            />
+            <AddChatModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onAdd={handleAddChat} />
         </div>
     );
 };

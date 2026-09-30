@@ -13,11 +13,13 @@ interface Props {
 
 export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
     const [phone, setPhone] = useState("");
-    const [error, setError] = useState<string>();
+    const [error, setError] = useState("");
+    const [touched, setTouched] = useState(false);
 
     const reset = () => {
         setPhone("");
         setError("");
+        setTouched(false);
     };
 
     const close = () => {
@@ -25,22 +27,30 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
         onClose();
     };
 
-    const handleSubmit = () => {
-        setError(undefined);
+    const validate = (newValue?: string) => {
+        setTouched(true);
 
-        const digits = phone.replace(/\D/g, "");
+        const digits = (newValue ?? phone).replace(/\D/g, "");
 
-        // Validate Russian phone format: 11 digits starting with 7
         if (digits.length !== 11) {
             setError("Введите корректный номер телефона");
-            return;
+            return false;
         }
+
         if (!digits.startsWith("7")) {
             setError("Номер телефона должен начинаться с 7");
+            return false;
+        }
+
+        setError("");
+        return true;
+    };
+
+    const handleSubmit = () => {
+        if (!validate()) {
             return;
         }
 
-        // Check if chat already exists
         onAdd(phone);
 
         close();
@@ -49,7 +59,15 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
     return (
         <Modal isOpen={isOpen} onClose={close} title="Новый чат">
             <div className={styles.form}>
-                <PhoneInput value={phone} onChange={setPhone} error={error} />
+                <PhoneInput
+                    value={phone}
+                    onChange={(value) => {
+                        setError("");
+                        setPhone(value);
+                    }}
+                    error={touched ? error : void 0}
+                    onBlur={() => validate()}
+                />
                 <div className={styles.actions}>
                     <Button variant="secondary" onClick={close}>
                         Отмена
