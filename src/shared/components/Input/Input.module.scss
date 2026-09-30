@@ -1,0 +1,59 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    color: rgb(255 255 255 / 60%);
+    font-size: 13px;
+    font-weight: 500;
+
+    .required {
+        color: rgb(220 50 50 / 100%);
+        margin-left: 2px;
+    }
+}
+
+.input {
+    background-color: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: rgb(255 255 255 / 100%);
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
+
+    &::placeholder {
+        color: rgb(255 255 255 / 30%);
+    }
+
+    &:focus {
+        border-color: rgb(255 255 255 / 25%);
+        background-color: rgb(255 255 255 / 8%);
+    }
+
+    &:hover:not(&.error) {
+        border-color: rgb(255 255 255 / 20%);
+    }
+
+    &.error {
+        border-color: rgb(220 50 50 / 100%);
+
+        &:focus {
+            border-color: rgb(220 50 50 / 100%);
+        }
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.errorText {
+    color: rgb(220 50 50 / 100%);
+    font-size: 12px;
+}

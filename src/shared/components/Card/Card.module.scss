@@ -1,0 +1,21 @@
+.card {
+    background-color: rgb(7 46 63 / 60%);
+    border: 1px solid rgb(255 255 255 / 08%);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+
+    &.hoverable {
+        &:hover {
+            background-color: rgb(7 46 63 / 80%);
+            border-color: rgb(255 255 255 / 15%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+        }
+    }
+
+    &.clickable {
+        cursor: pointer;
+    }
+}
