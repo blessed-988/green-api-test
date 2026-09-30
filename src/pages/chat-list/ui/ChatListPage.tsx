@@ -150,12 +150,12 @@ export const ChatListPage: FC = () => {
                     </>
                 ) : (
                     <div className={styles.emptyState}>
-                        <div className={styles.emptyStateContent}>
+                        <Card className={styles.emptyStateContent}>
                             <div className={styles.emptyTitle}>Выберите чат</div>
                             <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
                                 Выберите диалог из списка или создайте новый
                             </div>
-                        </div>
+                        </Card>
                     </div>
                 )}
             </div>
