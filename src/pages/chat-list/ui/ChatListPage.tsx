@@ -6,6 +6,7 @@ import { useInstanceStore } from "src/entities/instance";
 import { Button } from "src/shared/components/Button";
 import { Loader } from "src/shared/components/Loader";
 import { AddChatModal } from "src/features/add-chat";
+import { usePollNotifications } from "src/features/poll-notifications";
 import PlusIcon from "src/shared/ui/assets/icons/plus.svg?react";
 import SendIcon from "src/shared/ui/assets/icons/send.svg?react";
 import styles from "./ChatListPage.module.scss";
@@ -14,6 +15,8 @@ import { cn } from "src/shared/utils/cn";
 import { formatPhone } from "src/shared/utils/formatPhone";
 
 export const ChatListPage: FC = () => {
+    usePollNotifications();
+
     const chats = useChatStore((s) => s.chats);
     const chatMessages = useChatStore((s) => s.chatMessages);
     const selectedChatPhone = useChatStore((s) => s.selectedChatPhone);
