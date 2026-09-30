@@ -8,12 +8,14 @@ import SendIcon from "src/shared/ui/assets/icons/send.svg?react";
 import styles from "./ChatListPage.module.scss";
 import { Card } from "src/shared/components/Card";
 import { cn } from "src/shared/utils/cn";
+import { formatPhone } from "src/shared/utils/formatPhone";
 
 export const ChatListPage: FC = () => {
     const chats = useChatStore((s) => s.chats);
     const chatMessages = useChatStore((s) => s.chatMessages);
     const selectedChatPhone = useChatStore((s) => s.selectedChatPhone);
     const selectChat = useChatStore((s) => s.selectChat);
+    const selectNewChat = useChatStore((s) => s.selectNewChat);
     const sendMessage = useChatStore((s) => s.sendMessage);
 
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -22,8 +24,7 @@ export const ChatListPage: FC = () => {
     const selectedMessages = selectedChatPhone ? chatMessages[selectedChatPhone] || [] : [];
 
     const handleAddChat = (phone: string) => {
-        // TODO: Реализовать проверку существования чата и добавление через API
-        selectChat(phone);
+        selectNewChat(phone);
     };
 
     const handleSendMessage = () => {
@@ -39,11 +40,6 @@ export const ChatListPage: FC = () => {
             e.preventDefault();
             handleSendMessage();
         }
-    };
-
-    const getPhoneInitials = (phone: string) => {
-        const digits = phone.replace(/\D/g, "");
-        return digits.slice(-2);
     };
 
     return (
@@ -77,9 +73,8 @@ export const ChatListPage: FC = () => {
                                 className={`${styles.chatItem} ${selectedChatPhone === phone ? styles.active : ""}`}
                                 onClick={() => selectChat(phone)}
                             >
-                                <div className={styles.avatarPlaceholder}>{getPhoneInitials(phone)}</div>
                                 <div className={styles.chatInfo}>
-                                    <div className={styles.chatPhone}>{phone}</div>
+                                    <div className={styles.chatPhone}>{formatPhone(phone)}</div>
                                     <div className={styles.chatLastMessage}>
                                         {chatMessages[phone]?.at(-1)?.text || "Нет сообщений"}
                                     </div>
@@ -94,7 +89,7 @@ export const ChatListPage: FC = () => {
                 {selectedChatPhone ? (
                     <>
                         <div className={styles.dialogHeader}>
-                            <div className={styles.dialogPhone}>{selectedChatPhone}</div>
+                            <div className={styles.dialogPhone}>{formatPhone(selectedChatPhone)}</div>
                         </div>
 
                         <div className={styles.messagesArea}>

@@ -4,6 +4,8 @@ import { Button } from "src/shared/components/Button";
 import { Modal } from "src/shared/components/Modal";
 import { PhoneInput } from "src/shared/components/PhoneInput";
 import styles from "./AddChatModal.module.scss";
+import { useChatStore } from "src/entities/chat";
+import { formatPhone } from "src/shared/utils/formatPhone";
 
 interface Props {
     isOpen: boolean;
@@ -12,6 +14,8 @@ interface Props {
 }
 
 export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
+    const chats = useChatStore((state) => state.chats);
+
     const [phone, setPhone] = useState("");
     const [error, setError] = useState("");
     const [touched, setTouched] = useState(false);
@@ -39,6 +43,11 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
 
         if (!digits.startsWith("7")) {
             setError("Номер телефона должен начинаться с 7");
+            return false;
+        }
+
+        if (chats.includes(digits)) {
+            setError(`Чат с ${formatPhone(digits)} уже существует`);
             return false;
         }
 

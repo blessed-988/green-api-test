@@ -12,6 +12,7 @@ interface Action {
     addChat: (phone: string) => void;
     removeChat: (phone: string) => void;
     selectChat: (phone: string) => void;
+    selectNewChat: (phone: string) => void;
     sendMessage: (phone: string, text: string) => void;
     receiveMessage: (phone: string, text: string) => void;
 }
@@ -28,6 +29,7 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
     addChat: (phone) =>
         set(
             produce((state: State) => {
+                if (state.chats.includes(phone)) return;
                 state.chats.push(phone);
                 state.chatMessages[phone] = [];
             }),
@@ -43,10 +45,20 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
             }),
         ),
 
+    selectNewChat: (phone) =>
+        set(
+            produce((state: State) => {
+                if (state.chats.includes(phone)) return;
+                state.chats.push(phone);
+                state.chatMessages[phone] = [];
+                state.selectedChatPhone = phone;
+            }),
+        ),
+
     selectChat: (phone) =>
         set(
             produce((state: State) => {
-                state.selectedChatPhone = phone;
+                if (state.chats.includes(phone)) state.selectedChatPhone = phone;
             }),
         ),
 

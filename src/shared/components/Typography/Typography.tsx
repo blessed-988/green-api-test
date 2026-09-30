@@ -1,5 +1,5 @@
 import { cn } from "src/shared/utils/cn";
-import type { ElementType, FC } from "react";
+import type { ElementType, JSX } from "react";
 
 interface TypographyProps<E extends ElementType> {
     as?: E;
@@ -18,7 +18,13 @@ const variantStyles: VariantStyles = {
     caption: "text-sm text-white/50",
 };
 
-export const Typography: FC<TypographyProps<any>> = ({ as, variant = "p", className, children, ...rest }) => {
+export function Typography<E extends ElementType>({
+    as,
+    variant = "p",
+    className,
+    children,
+    ...rest
+}: TypographyProps<E>): JSX.Element {
     const Component = as || variant || "p";
 
     return (
@@ -26,4 +32,4 @@ export const Typography: FC<TypographyProps<any>> = ({ as, variant = "p", classN
             {children}
         </Component>
     );
-};
+}

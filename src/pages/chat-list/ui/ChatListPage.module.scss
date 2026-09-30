@@ -68,13 +68,14 @@ $headerHeight: 72px;
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    backdrop-filter: blur(4px);
 
     &:hover {
-        background-color: rgb(255 255 255 / 5%);
+        background-color: rgb(66 6 145 / 26%);
     }
 
     &.active {
-        background-color: rgb(255 255 255 / 10%);
+        background-color: rgb(70 0 156 / 64%);
     }
 }
 
