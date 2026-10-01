@@ -1,6 +1,7 @@
 import { produce } from "immer";
 import type { Message } from "src/entities/chat";
 import { createWithMiddlewares } from "src/shared/utils/createWithMiddlewares";
+import { normalizePhone } from "src/shared/utils/validatePhone";
 
 interface State {
     chats: string[];
@@ -32,44 +33,49 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
     addChat: (phone) =>
         set(
             produce((state: State) => {
-                if (state.chats.includes(phone)) return;
-                state.chats.push(phone);
-                state.chatMessages[phone] = [];
+                const normalized = normalizePhone(phone);
+                if (state.chats.includes(normalized)) return;
+                state.chats.push(normalized);
+                state.chatMessages[normalized] = [];
             }),
         ),
 
     removeChat: (phone) =>
         set(
             produce((state: State) => {
-                const idx = state.chats.indexOf(phone);
+                const normalized = normalizePhone(phone);
+                const idx = state.chats.indexOf(normalized);
                 if (idx !== -1) state.chats.splice(idx, 1);
-                delete state.chatMessages[phone];
-                if (state.selectedChatPhone === phone) state.selectedChatPhone = null;
+                delete state.chatMessages[normalized];
+                if (state.selectedChatPhone === normalized) state.selectedChatPhone = null;
             }),
         ),
 
     selectNewChat: (phone) =>
         set(
             produce((state: State) => {
-                if (state.chats.includes(phone)) return;
-                state.chats.push(phone);
-                state.chatMessages[phone] = [];
-                state.selectedChatPhone = phone;
+                const normalized = normalizePhone(phone);
+                if (state.chats.includes(normalized)) return;
+                state.chats.push(normalized);
+                state.chatMessages[normalized] = [];
+                state.selectedChatPhone = normalized;
             }),
         ),
 
     selectChat: (phone) =>
         set(
             produce((state: State) => {
-                if (state.chats.includes(phone)) state.selectedChatPhone = phone;
+                const normalized = normalizePhone(phone);
+                if (state.chats.includes(normalized)) state.selectedChatPhone = normalized;
             }),
         ),
 
     sendMessage: (phone, text) =>
         set(
             produce((state: State) => {
-                if (!state.chatMessages[phone]) state.chatMessages[phone] = [];
-                state.chatMessages[phone].push({
+                const normalized = normalizePhone(phone);
+                if (!state.chatMessages[normalized]) state.chatMessages[normalized] = [];
+                state.chatMessages[normalized].push({
                     id: crypto.randomUUID(),
                     text,
                     timestamp: new Date(),
@@ -81,11 +87,12 @@ export const useChatStore = createWithMiddlewares<State & Action>("chat-store")(
     receiveMessage: (phone, text) =>
         set(
             produce((state: State) => {
-                if (!state.chats.includes(phone)) {
-                    state.chats.push(phone);
+                const normalized = normalizePhone(phone);
+                if (!state.chats.includes(normalized)) {
+                    state.chats.push(normalized);
                 }
-                if (!state.chatMessages[phone]) state.chatMessages[phone] = [];
-                state.chatMessages[phone].push({
+                if (!state.chatMessages[normalized]) state.chatMessages[normalized] = [];
+                state.chatMessages[normalized].push({
                     id: crypto.randomUUID(),
                     text,
                     timestamp: new Date(),

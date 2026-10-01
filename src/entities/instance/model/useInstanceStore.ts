@@ -18,3 +18,7 @@ export const useInstanceStore = createWithMiddlewares<State & Action>("instance-
     setInstance: (credentials: InstanceCredentials) => set((state) => ({ ...state, ...credentials })),
     clearInstance: () => set(() => ({ ...initialState })),
 }));
+
+export function getInstanceCredentials(): InstanceCredentials {
+    return useInstanceStore.getState();
+}

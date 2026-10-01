@@ -5,7 +5,7 @@ import { Modal } from "src/shared/components/Modal";
 import { PhoneInput } from "src/shared/components/PhoneInput";
 import styles from "./AddChatModal.module.scss";
 import { useChatStore } from "src/entities/chat";
-import { formatPhone } from "src/shared/utils/formatPhone";
+import { isValidPhone, formatPhone } from "src/shared/utils/validatePhone";
 
 interface Props {
     isOpen: boolean;
@@ -34,20 +34,17 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
     const validate = (newValue?: string) => {
         setTouched(true);
 
-        const digits = (newValue ?? phone).replace(/\D/g, "");
+        const phoneValue = newValue ?? phone;
 
-        if (digits.length !== 11) {
+        if (!isValidPhone(phoneValue)) {
             setError("Введите корректный номер телефона");
             return false;
         }
 
-        if (!digits.startsWith("7")) {
-            setError("Номер телефона должен начинаться с 7");
-            return false;
-        }
+        const normalized = phoneValue.replace(/\D/g, "");
 
-        if (chats.includes(digits)) {
-            setError(`Чат с ${formatPhone(digits)} уже существует`);
+        if (chats.includes(normalized)) {
+            setError(`Чат с ${formatPhone(phoneValue)} уже существует`);
             return false;
         }
 
@@ -74,7 +71,7 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
                         setError("");
                         setPhone(value);
                     }}
-                    error={touched ? error : void 0}
+                    error={(touched && isOpen) ? error : void 0}
                     onBlur={() => validate()}
                 />
                 <div className={styles.actions}>

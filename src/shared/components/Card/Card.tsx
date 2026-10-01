@@ -5,18 +5,8 @@ import { cn } from "src/shared/utils/cn";
 interface Props {
     children: ReactNode;
     className?: string;
-    hoverable?: boolean;
-    clickable?: boolean;
-    onClick?: () => void;
 }
 
-export const Card: FC<Props> = ({ children, className, hoverable = false, clickable = false, onClick }) => {
-    return (
-        <div
-            className={cn(styles.card, hoverable && styles.hoverable, clickable && styles.clickable, className)}
-            onClick={clickable ? onClick : undefined}
-        >
-            {children}
-        </div>
-    );
+export const Card: FC<Props> = ({ children, className }) => {
+    return <div className={cn(styles.card, className)}>{children}</div>;
 };

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useChatStore } from "src/entities/chat";
 import { deleteNotification, receiveNotification } from "src/entities/message";
 import { useInstanceStore } from "src/entities/instance";
+import { isValidPhone, normalizePhone } from "src/shared/utils/validatePhone";
 
 const POLL_INTERVAL = 10_000;
 
@@ -38,8 +39,10 @@ export function usePollNotifications() {
                 if (notification.typeWebhook === "incomingMessageReceived") {
                     const text = notification.messageData.textMessageData?.textMessage;
                     if (text) {
-                        const senderPhone = String(notification.senderData.senderPhoneNumber);
-                        receiveMessageRef.current(senderPhone, text);
+                        const senderPhone = normalizePhone(String(notification.senderData.senderPhoneNumber));
+                        if (isValidPhone(senderPhone)) {
+                            receiveMessageRef.current(senderPhone, text);
+                        }
                     }
                 }
 

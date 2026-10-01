@@ -28,10 +28,13 @@ export const ConfirmModal: FC<Props> = ({
                 <Button variant="secondary" onClick={onClose}>
                     {cancelText}
                 </Button>
-                <Button variant="primary" onClick={() => {
-                    onConfirm();
-                    onClose();
-                }}>
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        onConfirm();
+                        onClose();
+                    }}
+                >
                     {confirmText}
                 </Button>
             </div>

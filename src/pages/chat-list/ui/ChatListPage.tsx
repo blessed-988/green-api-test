@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FC } from "react";
 import { useChatStore } from "src/entities/chat";
 import { sendMessage } from "src/entities/message";
-import { useInstanceStore } from "src/entities/instance";
+import { getInstanceCredentials } from "src/entities/instance";
 import { Button } from "src/shared/components/Button";
 import { Loader } from "src/shared/components/Loader";
 import { ConfirmModal } from "src/shared/components/ConfirmModal";
@@ -13,8 +13,7 @@ import SendIcon from "src/shared/ui/assets/icons/send.svg?react";
 import TrashIcon from "src/shared/ui/assets/icons/trash.svg?react";
 import styles from "./ChatListPage.module.scss";
 import { Card } from "src/shared/components/Card";
-import { cn } from "src/shared/utils/cn";
-import { formatPhone } from "src/shared/utils/formatPhone";
+import { formatPhone } from "src/shared/utils/validatePhone";
 
 export const ChatListPage: FC = () => {
     usePollNotifications();
@@ -65,7 +64,7 @@ export const ChatListPage: FC = () => {
         setMessageText("");
         setIsSending(true);
 
-        const credentials = useInstanceStore.getState();
+        const credentials = getInstanceCredentials();
 
         if (!credentials.idInstance || !credentials.apiTokenInstance) {
             setIsSending(false);
@@ -114,9 +113,7 @@ export const ChatListPage: FC = () => {
                         <div className={styles.emptyChatList}>
                             <Card>
                                 <div className={styles.emptyTitle}>Нет активных чатов</div>
-                                <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
-                                    Нажмите + чтобы начать диалог
-                                </div>
+                                <div className={styles.emptySubtitle}>Нажмите + чтобы начать диалог</div>
                             </Card>
                         </div>
                     ) : (
@@ -125,10 +122,7 @@ export const ChatListPage: FC = () => {
                                 key={phone}
                                 className={`${styles.chatItem} ${selectedChatPhone === phone ? styles.active : ""}`}
                             >
-                                <button
-                                    className={styles.chatItemButton}
-                                    onClick={() => selectChat(phone)}
-                                >
+                                <button className={styles.chatItemButton} onClick={() => selectChat(phone)}>
                                     <div className={styles.chatInfo}>
                                         <div className={styles.chatPhone}>{formatPhone(phone)}</div>
                                         <div className={styles.chatLastMessage}>
@@ -136,10 +130,7 @@ export const ChatListPage: FC = () => {
                                         </div>
                                     </div>
                                 </button>
-                                <button
-                                    className={styles.deleteChatButton}
-                                    onClick={() => handleDeleteChat(phone)}
-                                >
+                                <button className={styles.deleteChatButton} onClick={() => handleDeleteChat(phone)}>
                                     <TrashIcon />
                                 </button>
                             </div>
@@ -158,9 +149,7 @@ export const ChatListPage: FC = () => {
                         <div className={styles.messagesArea} ref={messagesAreaRef}>
                             {selectedMessages.length === 0 ? (
                                 <div className={styles.emptyMessages}>
-                                    <Card className={cn("text-[13px] text-[rgb(255_255_255/50%)]")}>
-                                        Начните диалог
-                                    </Card>
+                                    <Card className={styles.emptySubtitle}>Начните диалог</Card>
                                 </div>
                             ) : (
                                 <div className={styles.messageList}>
@@ -202,9 +191,7 @@ export const ChatListPage: FC = () => {
                     <div className={styles.emptyState}>
                         <Card className={styles.emptyStateContent}>
                             <div className={styles.emptyTitle}>Выберите чат</div>
-                            <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.5)" }}>
-                                Выберите диалог из списка или создайте новый
-                            </div>
+                            <div className={styles.emptySubtitle}>Выберите диалог из списка или создайте новый</div>
                         </Card>
                     </div>
                 )}

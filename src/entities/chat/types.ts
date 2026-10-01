@@ -4,8 +4,3 @@ export interface Message {
     timestamp: Date;
     isOwn: boolean;
 }
-
-export interface Chat {
-    phone: string;
-    lastMessage?: string;
-}
