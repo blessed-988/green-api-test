@@ -1,78 +1,281 @@
-# React + TypeScript + Vite
+# Green API Test — React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для работы с Green API (мессенджеры Telegram, WhatsApp, MAX). Позволяет авторизоваться по idInstance и apiTokenInstance инстанса, просматривать список чатов и работать с сообщениями.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Содержание
 
-## React Compiler
+- [Требования](#требования)
+- [Установка Node.js](#установка-nodejs)
+- [Создание инстанса на Green API](#создание-инстанса-на-green-api)
+- [Получение credentials](#получение-credentials)
+- [Локальный запуск проекта](#локальный-запуск-проекта)
+- [Сборка проекта](#сборка-проекта)
+- [Тестирование и линтинг](#тестирование-и-линтинг)
+- [Структура проекта](#структура-проекта)
+- [Доступные мессенджеры и сервера](#доступные-мессенджеры-и-сервера)
+- [Обзор проекта](#обзор-проекта)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+## Требования
 
-## Expanding the ESLint configuration
+| Компонент | Версия |
+|-----------|--------|
+| **Node.js** | `>= 24.0.0` (обязательно) |
+| **npm** | `>= 10.0.0` (идёт вместе с Node.js) |
+| **Операционная система** | Windows / macOS / Linux |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+> **Важно:** Проект использует Node.js версии 24 или выше. Более старые версии **не поддерживаются**.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Установка Node.js
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Шаг 1: Проверка текущей версии
 
+Откройте PowerShell (или терминал) и выполните:
+
+```powershell
+node -v
+npm -v
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Если версии не отображаются или они ниже `24.0.0` — переходите к шагу 2.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Шаг 2: Установка Node.js
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+#### Вариант A: Через официальный установщик (рекомендуется)
+
+1. Перейдите на сайт [https://nodejs.org](https://nodejs.org).
+2. Скачайте **LTS-версию** (Long Term Support) — она подойдёт для большинства пользователей.
+   > Примечание: если LTS-версия меньше 24, скачайте **Current** (последнюю версию) с сайта nodejs.org/dist/.
+3. Запустите скачанный установщик (`node-vXX.XX.X-x64.msi` на Windows).
+4. Следуйте инструкциям установщика:
+   - Accept License Agreement → Next
+   - Оставьте путь по умолчанию (`C:\Program Files\nodejs\`) → Next
+   - Оставьте все компоненты выбранными → Next
+   - Нажмите **Install**
+5. Дождитесь завершения установки → Finish.
+
+#### Вариант B: Через пакетный менеджер (Windows — Chocolatey)
+
+Если у вас установлен [Chocolatey](https://chocolatey.org/):
+
+```powershell
+choco install nodejs -y
+```
+
+#### Вариант C: Через пакетный менеджер (macOS — Homebrew)
+
+```bash
+brew install node
+```
+
+### Шаг 3: Перезапуск терминала
+
+После установки **полностью закройте и откройте терминал заново**, чтобы изменения в PATH применились.
+
+### Шаг 4: Проверка установки
+
+```powershell
+node -v
+# Ожидаемый результат: v24.x.x или выше
+
+npm -v
+# Ожидаемый результат: 10.x.x или выше
+```
+
+---
+
+## Создание инстанса на Green API
+
+### Шаг 1: Регистрация аккаунта
+
+1. Перейдите на сайт [https://green-api.com](https://green-api.com).
+2. Нажмите **Sign Up** (или **Регистрация**).
+3. Заполните форму:
+   - **Email** — ваш действующий адрес электронной почты
+   - **Password** — надёжный пароль (минимум 8 символов)
+4. Нажмите **Register**.
+5. Проверьте почту и подтвердите регистрацию, перейдя по ссылке в письме от Green API.
+
+### Шаг 2: Создание инстанса
+
+1. После входа в личный кабинет перейдите во вкладку **Instances** (инстансы).
+2. Нажмите кнопку **Create Instance** (Создать инстанс).
+3. В открывшемся окне выберите **мессенджер**:
+   - **WhatsApp** — для работы с WhatsApp
+   - **Telegram** — для работы с Telegram
+   - **MAX** — для работы с MAX
+4. Выберите нужный мессенджер и тариф.
+
+### Шаг 3: Подключение мессенджера
+
+#### Для WhatsApp:
+
+1. После создания инстанса откройте его карточку.
+2. Нажмите **Get QR** (получить QR).
+3. Откройте WhatsApp на телефоне → **Настройки** → **Связанные устройства** → **Привязать устройство**.
+4. Наведите камеру телефона на QR-код на экране.
+5. Дождитесь статуса **Authorized** (Авторизован) в личном кабинете Green API.
+
+#### Для Telegram:
+
+1. После создания инстанса откройте его карточку.
+2. Нажмите **Get QR** (получить QR).
+3. Откройте Telegram на телефоне → **Настройки** → **Устройства** → **Подключить устройство**.
+4. Наведите камеру телефона на QR-код на экране.
+5. Дождитесь статуса **Authorized** (Авторизован) в личном кабинете Green API.
+
+#### Для MAX:
+
+1. После создания инстанса откройте его карточку.
+2. Нажмите **Get QR** (получить QR).
+3. Откройте MAX на телефоне → **Настройки** → **Устройства** → **Войти по QR-коду**.
+4. Наведите камеру телефона на QR-код на экране.
+5. Дождитесь статуса **Authorized** (Авторизован) в личном кабинете Green API.
+
+### Шаг 4: Получение credentials
+
+После авторизации инстанса перейдите в него:
+
+Вы найдёте два ключевых значения:
+
+| Параметр | Описание |
+|----------|----------|
+| **`idInstance`** | Уникальный идентификатор вашего инстанса. |
+| **`apiTokenInstance`** | Секретный API-токен для авторизации запросов. Длинная строка символов |
+
+---
+
+## Локальный запуск проекта
+
+### Шаг 1: Клонирование репозитория
+
+```powershell
+git clone https://github.com/blessed-988/green-api-test.git
+cd green-api-test
+```
+
+### Шаг 2: Установка зависимостей
+
+```powershell
+npm install
+```
+
+### Шаг 3: Запуск dev-сервера
+
+```powershell
+npm run dev
+```
+
+Эта команда:
+- Запускает Vite dev-сервер с Hot Module Replacement (HMR)
+- Открывает приложение в браузере по адресу **http://localhost:5173** (или предложит открыть)
+
+Ожидаемый вывод:
+```
+  VITE v8.3.0  ready in 320 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+```
+
+### Шаг 4: Открытие приложения
+
+1. Откройте браузер (Chrome, Firefox, Edge и т.д.).
+2. Перейдите по адресу **http://localhost:5173**.
+3. Вы увидите страницу входа (LoginPage).
+
+### Шаг 5: Вход в приложение
+
+1. На странице входа введите ваши credentials:
+   - **idInstance** — ваш ID инстанса
+   - **apiTokenInstance** — ваш API токен
+   - **Мессенджер** — выберите тип (Telegram / WhatsApp / MAX / Свой сервер)
+   - **apiUrl** — появится только если выбран «Свой сервер»
+2. Нажмите кнопку **Войти**.
+3. Если credentials верны — вы попадёте на страницу со списком чатов (ChatListPage).
+4. Если credentials неверны — появится сообщение об ошибке.
+
+### Шаг 6: Остановка dev-сервера
+
+Для остановки сервера нажмите в терминале:
 
 ```
+Ctrl + C
+```
+
+---
+
+## Обзор проекта
+
+### Что это
+
+**Green API Test** — десктопное веб-приложение (SPA) для взаимодействия с мессенджерами через Green API. Позволяет авторизоваться на инстансе, управлять списком чатов, отправлять и получать сообщения в реальном времени.
+
+### Архитектура
+
+Проект построен на принципах **feature-sliced design (FSD)** — модульной архитектуре, которая разделяет код по слоям ответственности:
+
+| Слой | Назначение |
+|------|-----------|
+| **`pages`** | Страницы приложения (Login, ChatList) — точки входа маршрутизации |
+| **`features`** | Пользовательские сценарии (логин, лог аут, добавление чата, polling уведомлений) |
+| **`entities`** | Бизнес-сущности с собственной логикой, сторами и API (Instance, Chat, Message) |
+| **`shared`** | Переиспользуемые компоненты, утилиты, стили, API-клиент |
+
+> Такой подход делает код предсказуемым: зависимости идут только **вниз** по слоям, никогда вверх.
+
+### Технологии
+
+| Категория | Стек |
+|-----------|------|
+| **Фреймворк** | React 19 + TypeScript 6 |
+| **Сборщик** | Vite 8 (с HMR и React Compiler) |
+| **Роутинг** | TanStack Router (type-safe роуты) |
+| **State-менеджмент** | Zustand (с middleware: persist + devtools) |
+| **Неизменяемость** | Immer (produce-паттерн для стора чатов) |
+| **Формы** | React Hook Form + Zod (валидация на уровне схем) |
+| **HTTP** | Axios (базовый клиент + конфигурация по умолчанию) |
+| **Стили** | Tailwind CSS 4 + Sass (модульные `.module.scss` файлы) |
+| **Линтинг** | ESLint 10 + Stylelint 17 |
+| **Иконки** | SVG-компоненты через `vite-plugin-svgr` |
+
+### Ключевые фичи
+
+**Авторизация и безопасность**
+- Вход по `idInstance` + `apiTokenInstance` с валидацией на сервере Green API
+- Автоматическое определение типа мессенджера по префиксу `idInstance`
+- Защита роутов — неавторизованные пользователи перенаправляются на `/login`
+- Состояние авторизации хранится в `localStorage` (persist-мидлвар Zustand)
+
+**Работа с чатами**
+- Поддержка нескольких инстансов одновременно — состояние чатов изолировано по `instanceId`
+- Добавление и удаление чатов из списка
+- Отправка сообщений в реальном времени
+- Автоматическое появление новых чатов при входящих сообщениях
+
+**Real-time уведомления**
+- Polling-механизм с интервалом 5.555 сек (`usePollNotifications`)
+- Получение входящих сообщений через Green API webhook-эндпоинт
+- Автоматическая очистка прочитанных уведомлений (`deleteNotification`)
+- Защита от дублирования запросов через `isPollingRef`
+
+**UX-детали**
+- Кастомный телефонный инпут с валидацией и нормализацией номеров
+- Модальные окна с анимациями и оверлеями
+- Тултипы с подсказками на странице входа
+- Кнопка логаута в хедере (скрыта на странице входа)
+- Состояния загрузки на кнопках (`loading`-спиннер)
+
+**Инфраструктурные фишки**
+- **React Compiler** — автоматическая оптимизация ререндеров (через Babel plugin)
+- **SVG-импорты** — иконки как React-компоненты (`import Icon from './icon.svg?react'`)
+- **Sass-DTS** — автоматическая генерация `.module.d.scss.ts` для типизации CSS-классов
+- **Type-safe роутинг** — TanStack Router генерирует типы из дерева маршрутов
+- **Нормализация телефонов** — единая логика форматирования номеров для всех операций
+- **Строгий линтинг** — ESLint 10 с плагинами TypeScript, React Hooks, Prettier и кастомным `eslint-plugin-project-structure`, который запрещает импорты между несмежными слоями FSD (например, из `shared` нельзя импортировать в `entities`)
+- **Stylelint** — проверка SCSS/CSS с паттернами для классов, переменных и Tailwind-директив; интеграция с Prettier
