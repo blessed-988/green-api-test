@@ -71,7 +71,7 @@ export const AddChatModal: FC<Props> = ({ isOpen, onClose, onAdd }) => {
                         setError("");
                         setPhone(value);
                     }}
-                    error={(touched && isOpen) ? error : void 0}
+                    error={touched && isOpen ? error : void 0}
                     onBlur={() => validate()}
                 />
                 <div className={styles.actions}>

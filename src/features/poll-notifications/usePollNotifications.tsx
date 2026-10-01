@@ -4,7 +4,7 @@ import { deleteNotification, receiveNotification } from "src/entities/message";
 import { useInstanceStore } from "src/entities/instance";
 import { isValidPhone, normalizePhone } from "src/shared/utils/validatePhone";
 
-const POLL_INTERVAL = 10_000;
+const POLL_INTERVAL = 5_555;
 
 export function usePollNotifications() {
     const idInstance = useInstanceStore((s) => s.idInstance);

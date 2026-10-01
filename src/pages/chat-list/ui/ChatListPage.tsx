@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import type { FC } from "react";
 import { useChatStore } from "src/entities/chat";
 import { sendMessage } from "src/entities/message";
@@ -42,22 +42,25 @@ export const ChatListPage: FC = () => {
         }
     }, [selectedChatPhone, selectedMessages.length]);
 
-    const handleAddChat = (phone: string) => {
-        selectNewChat(phone);
-    };
+    const handleAddChat = useCallback(
+        (phone: string) => {
+            selectNewChat(phone);
+        },
+        [selectNewChat],
+    );
 
-    const handleDeleteChat = (phone: string) => {
+    const handleDeleteChat = useCallback((phone: string) => {
         setChatToDelete(phone);
-    };
+    }, []);
 
-    const confirmDeleteChat = () => {
+    const confirmDeleteChat = useCallback(() => {
         if (chatToDelete) {
             removeChat(chatToDelete);
             setChatToDelete(null);
         }
-    };
+    }, [chatToDelete, removeChat]);
 
-    const handleSendMessage = async () => {
+    const handleSendMessage = useCallback(async () => {
         if (!messageText.trim() || !selectedChatPhone) return;
 
         const text = messageText.trim();
@@ -85,14 +88,17 @@ export const ChatListPage: FC = () => {
         } finally {
             setIsSending(false);
         }
-    };
+    }, [messageText, selectedChatPhone, setIsSending, sendMessageToStore]);
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
-    };
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        },
+        [handleSendMessage],
+    );
 
     return (
         <div className={styles.page}>

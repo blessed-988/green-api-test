@@ -1,0 +1,153 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.label {
+    color: rgb(255 255 255 / 60%);
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .required {
+        color: rgb(220 50 50 / 100%);
+        margin-left: 2px;
+    }
+}
+
+.selectWrapper {
+    position: relative;
+    width: 100%;
+    background-color: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 8px;
+    padding: 10px 36px 10px 14px;
+    color: rgb(255 255 255 / 100%);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover:not(&.selectWrapperError, &.selectWrapperDisabled) {
+        border-color: rgb(255 255 255 / 20%);
+        background-color: rgb(255 255 255 / 7%);
+    }
+
+    &.selectWrapperOpen {
+        border-color: rgb(7 46 63 / 100%);
+        background-color: rgb(255 255 255 / 8%);
+        box-shadow: 0 0 0 3px rgb(7 46 63 / 20%);
+    }
+
+    &.selectWrapperError {
+        border-color: rgb(220 50 50 / 100%);
+
+        &.selectWrapperOpen {
+            box-shadow: 0 0 0 3px rgb(220 50 50 / 15%);
+        }
+    }
+
+    &.selectWrapperDisabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+.selectedValue {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.placeholder {
+        color: rgb(255 255 255 / 40%);
+    }
+}
+
+.arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgb(255 255 255 / 50%);
+    transition: transform 0.2s ease-in-out;
+    pointer-events: none;
+
+    .selectWrapperOpen & {
+        transform: translateY(-50%) rotate(180deg);
+        color: rgb(255 255 255 / 80%);
+    }
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background-color: rgb(20 20 35 / 100%);
+    border: 1px solid rgb(7 46 63 / 100%);
+    border-radius: 8px;
+    padding: 4px 0;
+    list-style: none;
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgb(0 0 0 / 40%);
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgb(255 255 255 / 20%);
+        border-radius: 3px;
+
+        &:hover {
+            background: rgb(255 255 255 / 30%);
+        }
+    }
+}
+
+.option {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: rgb(255 255 255 / 90%);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover,
+    &.optionHighlighted {
+        background-color: rgb(255 255 255 / 8%);
+        color: rgb(255 255 255 / 100%);
+    }
+
+    &.optionSelected {
+        background-color: rgb(7 46 63 / 100%);
+        color: rgb(255 255 255 / 100%);
+        font-weight: 500;
+
+        &:hover {
+            background-color: rgb(7 46 63 / 100%);
+        }
+    }
+}
+
+.errorText {
+    color: rgb(220 50 50 / 100%);
+    font-size: 12px;
+}
